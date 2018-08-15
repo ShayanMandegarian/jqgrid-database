@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script src="jquery-ui/external/jquery/jquery.js" type="text/javascript"></script>
+	<script src="jquery-ui/jquery-ui.js" type="text/javascript"></script>
+	<script src="jqGrid_JS/js/i18n/grid.locale-en.js" type="text/javascript"></script>
+	<script src="jqGrid_JS/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="jquery-ui/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="jqGrid_JS/css/ui.jqgrid.css" />
+	
+	<!--
+	<link rel="stylesheet" type="text/css" media="screen" href="https://plus.google.com/_/scs/apps-static/_/ss/k=oz.sbw_bss.unuyglu5qgw0.L.W.O/d=0/rs=AGLTcCOPzLyPZ_9N9SZznQn26BiVYyZ-aQ" />
+	<link rel="stylesheet" type="text/css" media="screen" href="http://www.trirand.com/blog/jqgrid/themes/redmond/jquery-ui-custom.css"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="http://www.trirand.com/blog/jqgrid/themes/ui.jqgrid.css"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="http://www.trirand.com/blog/jqgrid/themes/ui.multiselect.css"/>
+	-->
+    <meta charset="utf-8" />
+    <title>Purpletie Admin</title>
+    <script type="text/javascript"> 
+    	$(function() {
+    		$( "#tabs" ).tabs({
+      			beforeLoad: function( event, ui ) {
+        			ui.jqXHR.fail(function() {
+          				ui.panel.html("Couldn't load this tab. We'll try to fix this as soon as possible.");
+        			});
+      			}
+    		});
+  		});
+    </script>
+    <style>
+        .myul { font-size:12px; }
+        .myh1 { font-size:14px; }
+        html { font-size:100%;} 
+        body{font-size:1em;‌​font-family:inherit;}
+        *,:before,:after{font-family:inherit;}
+    </style>
+</head>
+<body>
+    <style type="text/css">
+		html, body {
+			margin: 20px;			/* Set body margin/padding */
+			padding: 0;
+		}
+        .ui-menu-item {
+            font-size: 11px;
+        }       
+    </style>
+	<div id="tabs">
+        <ul class="myul">
+            <li><a href="driver_logins.html">Driver Logins</a></li>
+            <li><a href="manage_holidays.html">Manage Holidays</a></li>
+            <!-- <li><a href="update.html">Update</a></li> -->
+        </ul>
+	</div>    
+</body>
+</html>

@@ -1,0 +1,89 @@
+	<h1 class="myh1">Manage Driver Logins</h1>
+	<br />
+	<table id="driverList"></table>
+	<div id="driverPager"></div>
+    <script type="text/javascript"> 
+    	
+		function handleErrorMessage(response){
+			alert("Error");
+			var json   = response.responseText; // response text is returned from server.
+			var result = JSON.parse(json); // convert json object into javascript object.
+			if(result.errcode!=0) {
+				return [false,result.msg,null]; 
+			} else {
+				return [true, result.msg, null];
+			}    
+        }
+		
+        $(document).ready(function () {
+            $("#driverList").jqGrid({
+                url: 'server/index.php/driver',
+                mtype: "GET",
+                editurl:'server/index.php/driver',
+                datatype: "json",
+                page: 1,
+                colModel: [
+                    {   label: "ID",
+						name: 'id', 
+						key: true, 
+						width: 50 
+					},
+                    {
+                        label: "SQLID",
+                        name: "sqlid",
+                        width: 50,
+                        editable: false
+                    },
+                    {
+						label: "Username",
+                        name: 'username',
+                        width: 150,
+                        editable: true,
+                        editrules:{
+                            required: true
+                   		}
+                    },
+                    {
+						label: "Password",
+                        name: 'passwd',
+                        width: 150,
+                        editable: true,
+                        editrules:{
+                            required: true
+                        }
+                    },
+                    {
+                        label: "Date",
+                        name: 'date',
+                        width: 250,
+                        editable: false,
+                        editrules: {
+                            required: false
+                        }
+                    },
+                    {
+                        label: "Deleted",
+                        name: "deleted",
+                        width: 50,
+                        hidden: true
+                    }
+
+                ],
+				loadonce: false,
+				viewrecords: true,
+				subGrid: false,
+                width: 760,
+                height: 260,
+                rowNum: 10,
+                pager: "#driverPager"
+            });
+            $('#driverList').jqGrid('filterToolbar');
+			$('#driverList').jqGrid('navGrid',"#driverPager", 
+				{ search: false, add: true, edit: true, del: true, refresh: true },
+            	{ closeAfterEdit: true, errorTextFormat: handleErrorMessage },
+            	{ closeAfterAdd: true, errorTextFormat: handleErrorMessage },
+            	{ errorTextFormat: handleErrorMessage }
+            );
+
+        });
+    </script>
