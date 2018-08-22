@@ -134,18 +134,69 @@ $app->get('/ionic', function () use ($app) {
 	$conn = getconnection();
 	$start = $_GET['start'];
 	$end = $_GET['end'];
-	$query = "SELECT * FROM driver_logins WHERE deleted = 0 LIMIT $start, $end";
+	$clause = 'deleted = 0';
+	if (isset($_GET['phrase'])) {
+		$phrase = $_GET['phrase'];
+		$clause = "deleted = 0 AND username LIKE '%".$phrase."%'";
+	}
+
+	$query = "SELECT * FROM driver_logins WHERE $clause ORDER BY id LIMIT $start, $end";
 	$result = $conn->query($query);
 	$rows = array();
 	while ($row = mysqli_fetch_assoc($result)) {
 			$rows[] = $row;
 	}
 	$response['rows'] = $rows;
-	$count_query  = "SELECT COUNT(*) AS count FROM driver_logins where deleted = 0";
+	$count_query  = "SELECT COUNT(*) AS count FROM driver_logins where $clause";
 	$count_result = $conn->query($count_query);
 	$count_row = mysqli_fetch_row($count_result);
 	$count = $count_row[0];
 	$response['count'] = $count;
+	$conn->close();
+	echo json_encode($response);
+});
+
+$app->get('/password', function () use ($app) {
+	$app->response()->header('Content-Type', 'application/json', 'Access-Control-Allow-Origin: *');
+	$conn = getconnection();
+	$user = $_GET['user'];
+	$pass = $_GET['pass'];
+	$query = "SELECT passwd FROM driver_logins WHERE username = '{$user}'";
+	$result = $conn->query($query);
+	$result_row = mysqli_fetch_row($result);
+	$correctPass = $result_row[0];
+	if ($pass == $correctPass) {
+		$response = "correct";
+		$conn->close();
+		echo json_encode($response);
+	}
+	else {
+		$response = "incorrect";
+		$conn->close();
+		echo json_encode($response);
+	}
+});
+
+$app->post('/ionic', function () use ($app) {
+	$app->response()->header('Content-Type', 'application/json', 'Access-Control-Allow-Origin: *');
+	$conn = getconnection();
+	$user = $_GET['user'];
+	$pass = $_GET['pass'];
+	$count_query = "SELECT COUNT(*) AS count FROM driver_logins where username = '{$user}'";
+	$count_result = $conn->query($count_query);
+	$count_row = mysqli_fetch_row($count_result);
+	$count = $count_row[0];
+	if ($count > 0) {
+		$query = "DELETE from driver_logins WHERE username = ?";
+		$stmt = $conn->prepare($query);
+		$stmt->bind_param("s", $user);
+		$stmt->execute();
+	}
+	$query = "INSERT INTO driver_logins (username, passwd) VALUES(?,?)";
+	$stmt = $conn->prepare($query);
+	$stmt->bind_param("ss", $user, $pass);
+	$stmt->execute();
+	$response = array("errcode" => 0, "msg"=>"New entry added");
 	$conn->close();
 	echo json_encode($response);
 });
